@@ -87,8 +87,9 @@ class _Palette(object):
       sum = r + g + b
       sr = float(r) / sum
       sg = float(g) / sum
-      x = self._blue[0] + sr * (self._red[0] - self._blue[0]) + sg * (self._green[0] - self._blue[0])
-      y = self._blue[1] + sr * (self._red[1] - self._blue[1]) + sg * (self._green[1] - self._blue[1])
+      sb = float(b) / sum
+      x = sr * self._red[0] + sg * self._green[0] + sb * self._blue[0]
+      y = sr * self._red[1] + sg * self._green[1] + sb * self._blue[1]
       return Color(max(r, g, b), x, y)
     return WHITE.Replace(bri=0)
 
