@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import contextlib
 import hue
 import os
