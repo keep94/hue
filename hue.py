@@ -14,10 +14,10 @@ class Color(collections.namedtuple('Color', 'bri x y')):
     return Color(int(self.bri * iratio + color.bri * ratio + 0.5), self.x * iratio + color.x * ratio, self.y * iratio + color.y * ratio)
 
 def FromHtml(htmlString):
-  return _palette.FromRGB(*_ParseRGBStr(htmlString))
+  return _PALETTE.FromRGB(*_ParseRGBStr(htmlString))
 
 def FromRGB(red, green, blue):
-  return _palette.FromRGB(red, green, blue)
+  return _PALETTE.FromRGB(red, green, blue)
 
 def NewContext(userId, ip=None):
   if not ip:
@@ -78,9 +78,9 @@ class _Palette(object):
       x = self._blue[0] + sr * (self._red[0] - self._blue[0]) + sg * (self._green[0] - self._blue[0])
       y = self._blue[1] + sr * (self._red[1] - self._blue[1]) + sg * (self._green[1] - self._blue[1])
       return Color(max(r, g, b), x, y)
-    return Color(0, 0.0, 0.0)
+    return WHITE.Replace(bri=0)
 
-_palette = _Palette((0.675, 0.322), (0.313, 0.725), (0.167, 0.04))
+_PALETTE = _Palette((0.675, 0.322), (0.313, 0.725), (0.167, 0.04))
 
 BLUE = FromRGB(0, 0, 255)
 RED = FromRGB(255, 0, 0)
