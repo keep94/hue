@@ -1,7 +1,17 @@
+import collections
+import contextlib
 import httplib
 import json
 import math
-import collections
+
+
+def FromHtml(htmlString):
+  return _PALETTE.FromRGB(*_ParseRGBStr(htmlString))
+
+
+def FromRGB(red, green, blue):
+  return _PALETTE.FromRGB(red, green, blue)
+
 
 class Color(collections.namedtuple('Color', 'bri x y')):
   __slots__ = ()
@@ -13,16 +23,12 @@ class Color(collections.namedtuple('Color', 'bri x y')):
     iratio = 1.0 - ratio
     return Color(int(self.bri * iratio + color.bri * ratio + 0.5), self.x * iratio + color.x * ratio, self.y * iratio + color.y * ratio)
 
-def FromHtml(htmlString):
-  return _PALETTE.FromRGB(*_ParseRGBStr(htmlString))
-
-def FromRGB(red, green, blue):
-  return _PALETTE.FromRGB(red, green, blue)
 
 def NewContext(userId, ip=None):
   if not ip:
     ip = _GetIP()
   return Context(httplib.HTTPConnection(ip), userId)
+
 
 class Context(object):
   
@@ -42,6 +48,9 @@ class Context(object):
     self._conn.request('PUT', self._LightUrl(id), json.dumps({'bri': color.bri, 'xy': [color.x, color.y]}))
     return self._conn.getresponse().read()
 
+  def close(self):
+    self._conn.close()
+
   def _LightUrl(self, id):
     if id == 0:
       return self._AllUrl()
@@ -50,6 +59,7 @@ class Context(object):
   def _AllUrl(self):
     return '/api/%s/groups/0/action' % self._userId
 
+
 def _ParseRGBStr(rgbStr):
   assert len(rgbStr) == 6
   r = int(rgbStr[:2], 16)
@@ -57,11 +67,13 @@ def _ParseRGBStr(rgbStr):
   b = int(rgbStr[4:], 16)
   return r, g, b
 
+
 def _GetIP():
-  conn = httplib.HTTPConnection('www.meethue.com')
-  conn.request('GET', '/api/nupnp')
-  response = json.loads(conn.getresponse().read())
-  return response[0]['internalipaddress']
+  with contextlib.closing(httplib.HTTPConnection('www.meethue.com')) as conn:
+    conn.request('GET', '/api/nupnp')
+    response = json.loads(conn.getresponse().read())
+    return response[0]['internalipaddress']
+
 
 class _Palette(object):
 
