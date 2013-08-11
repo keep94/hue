@@ -9,6 +9,10 @@ ON_FILE_PATH = '/Users/pegerita/morning_alarm.txt'
 DURATION = 300
 REFRESH = 5
 
+# We hard-code our bridge internal IP address as the IP address discovery
+# through the portal service can sometimes fail.
+HUE_BRIDGE_IP = '10.0.1.15'
+
 
 def IsAlarmOn():
   if not os.path.isfile(ON_FILE_PATH):
@@ -37,7 +41,7 @@ def Sunrise():
   red = hue.RED.Replace(bri=85)
   orange = hue.ORANGE.Replace(bri=170)
   white = hue.WHITE
-  with contextlib.closing(hue.NewContext('newdeveloper')) as cx:
+  with contextlib.closing(hue.NewContext('newdeveloper', ip=HUE_BRIDGE_IP)) as cx:
     cx.On(0)
     Transition(cx, 0, blue, red, DURATION, REFRESH)
     Transition(cx, 0, red, orange, DURATION, REFRESH)
