@@ -37,10 +37,10 @@ def Transition(cx, light, first, second, duration, refresh):
 def Sunrise():
   if not IsAlarmOn():
     return
-  dimredblue = hue.RED.Blend(hue.BLUE, 0.1).Replace(bri=0)
+  dimredblue = hue.Color(bri=0, x=0.5762, y=0.268)
   redblue = dimredblue.Replace(bri=51)
-  dimyellow = hue.YELLOW.Replace(bri=51)
-  white = hue.WHITE.Replace(bri=102)
+  dimyellow = hue.Color(bri=51, x=0.509, y=0.4149)
+  white = dimyellow.Replace(bri=102)
   with contextlib.closing(hue.NewContext('newdeveloper', ip=HUE_BRIDGE_IP)) as cx:
     cx.On(0)
     cx.SetColor(0, dimredblue)
