@@ -6,7 +6,7 @@ import os
 import time
 
 ON_FILE_PATH = '/Users/pegerita/morning_alarm.txt'
-DURATION = 300
+SPEED = 1.0
 REFRESH = 5
 
 # We hard-code our bridge internal IP address as the IP address discovery
@@ -37,15 +37,17 @@ def Transition(cx, light, first, second, duration, refresh):
 def Sunrise():
   if not IsAlarmOn():
     return
-  blue = hue.BLUE.Replace(bri=0)
-  red = hue.RED.Replace(bri=85)
-  orange = hue.ORANGE.Replace(bri=170)
-  white = hue.WHITE
+  dimredblue = hue.RED.Blend(hue.BLUE, 0.1).Replace(bri=0)
+  redblue = dimredblue.Replace(bri=51)
+  dimyellow = hue.YELLOW.Replace(bri=51)
+  white = hue.WHITE.Replace(bri=102)
   with contextlib.closing(hue.NewContext('newdeveloper', ip=HUE_BRIDGE_IP)) as cx:
     cx.On(0)
-    Transition(cx, 0, blue, red, DURATION, REFRESH)
-    Transition(cx, 0, red, orange, DURATION, REFRESH)
-    Transition(cx, 0, orange, white, DURATION, REFRESH)
+    cx.SetColor(0, dimredblue)
+    time.sleep(720.0 / SPEED)
+    Transition(cx, 0, dimredblue, redblue, 180.0 / SPEED, REFRESH)
+    Transition(cx, 0, redblue, dimyellow, 180.0 / SPEED, REFRESH)
+    Transition(cx, 0, dimyellow, white, 720.0 / SPEED, REFRESH)
 
 
 if __name__ == '__main__':
