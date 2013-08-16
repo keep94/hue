@@ -37,15 +37,22 @@ class Context(object):
     self._userId = userId
 
   def On(self, id):
-    self._conn.request('PUT', self._LightUrl(id), json.dumps({'on': True}))
-    return self._conn.getresponse().read()
+    return self.Set(id, on=True)
 
   def Off(self, id):
-    self._conn.request('PUT', self._LightUrl(id), json.dumps({'on': False}))
-    return self._conn.getresponse().read()
+    return self.Set(id, on=False)
 
   def SetColor(self, id, color):
-    self._conn.request('PUT', self._LightUrl(id), json.dumps({'bri': color.bri, 'xy': [color.x, color.y]}))
+    return self.Set(id, color=color)
+
+  def Set(self, id, color=None, on=None):
+    req = {}
+    if on is not None:
+      req['on'] = on
+    if color is not None:
+      req['bri'] = color.bri
+      req['xy'] = [color.x, color.y]
+    self._conn.request('PUT', self._LightUrl(id), json.dumps(req))
     return self._conn.getresponse().read()
 
   def close(self):

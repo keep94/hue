@@ -42,12 +42,12 @@ def Sunrise():
   dimyellow = hue.Color(bri=51, x=0.509, y=0.4149)
   white = dimyellow.Replace(bri=102)
   with contextlib.closing(hue.NewContext('newdeveloper', ip=HUE_BRIDGE_IP)) as cx:
-    cx.On(0)
-    cx.SetColor(0, dimredblue)
+    cx.Set(0, on=True, color=dimredblue)
     time.sleep(720.0 / SPEED)
     Transition(cx, 0, dimredblue, redblue, 180.0 / SPEED, REFRESH)
     Transition(cx, 0, redblue, dimyellow, 180.0 / SPEED, REFRESH)
     Transition(cx, 0, dimyellow, white, 720.0 / SPEED, REFRESH)
+    cx.SetColor(0, white)
 
 
 if __name__ == '__main__':
